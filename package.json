@@ -1,6 +1,6 @@
 {
   "name": "mole-rpc-transport-mqtt",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "MQTT transport for Mole-RPC (JSON RPC library)",
   "main": "index.js",
   "scripts": {

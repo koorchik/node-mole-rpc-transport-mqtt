@@ -11,11 +11,11 @@ class MQTTTransportServer {
 
     async onMessage(callback) {
         await this.mqttClient.subscribe(this.inTopic);
-        this.mqttClient.on('message', (topic, requestData) => { 
+        this.mqttClient.on('message', (inTopic, requestData) => { 
             callback(requestData.toString(), (responseData) => {
                 const outTopic = 
                     typeof this.outTopic === "function" 
-                    ? this.outTopic({inTopic: topic})
+                    ? this.outTopic({inTopic})
                     : this.outTopic;
 
                 this._send(outTopic, responseData)
