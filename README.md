@@ -63,12 +63,12 @@ async function runClients() {
     
     console.log(
         'CLIENT 1',
-        await client1.callMethod('getGreeting', 'User1')
+        await client1.callMethod('getGreeting', ['User1'])
     );
 
     console.log(
         'CLIENT 2',
-        await client2.callMethod('getGreeting', 'User2')
+        await client2.callMethod('getGreeting', ['User2'])
     );
 }
 
