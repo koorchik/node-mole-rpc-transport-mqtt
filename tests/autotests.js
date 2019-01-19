@@ -7,13 +7,9 @@ const AutoTester = require('mole-rpc/AutoTester');
 const TransportClient = require('../TransportClient');
 const TransportServer = require('../TransportServer');
 
-const EventEmitter = require('events');
-
 async function main() {
-    const emitter = new EventEmitter();
-
-    const server = await prepareServer(emitter);
-    const clients = await prepareClients(emitter);
+    const server = await prepareServer();
+    const clients = await prepareClients();
 
     const autoTester = new AutoTester({
         server,

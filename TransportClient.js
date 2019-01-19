@@ -9,18 +9,16 @@ class MQTTTransportClient {
         this.outTopic = outTopic;
     }
 
-    async onResponse(callback) {
-        this.onMessageCallback = callback;
-
+    async onData(callback) {
         await this.mqttClient.subscribe(this.inTopic);
 
         this.mqttClient.on('message', (topic, data) => {
             if (topic !== this.inTopic) return;
-            this.onMessageCallback(data.toString());
+            callback(data.toString());
         });
     }
 
-    async sendRequest(data) {
+    async sendData(data) {
         await this.mqttClient.publish(this.outTopic, data);
     }
 }
