@@ -8,6 +8,8 @@ const AutoTester = require('mole-rpc-autotester');
 const TransportClient = require('../TransportClient');
 const TransportServer = require('../TransportServer');
 
+const MQTT_ENDPOINT = 'tcp://test.mosquitto.org:1883'; // "tcp://localhost:1883" for local testing
+
 async function main() {
     const server = await prepareServer();
     const clients = await prepareClients();
@@ -23,7 +25,7 @@ async function main() {
 }
 
 async function prepareServer() {
-    const mqttClient = MQTT.connect('tcp://localhost:1883');
+    const mqttClient = MQTT.connect(MQTT_ENDPOINT);
 
     return new MoleServer({
         transports: [
@@ -37,7 +39,7 @@ async function prepareServer() {
 }
 
 async function prepareClients() {
-    const mqttClient = MQTT.connect('tcp://localhost:1883');
+    const mqttClient = MQTT.connect(MQTT_ENDPOINT);
 
     const simpleClient = new MoleClient({
         requestTimeout: 1000, // autotester expects this value
