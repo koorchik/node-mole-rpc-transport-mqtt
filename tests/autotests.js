@@ -2,7 +2,8 @@ const MQTT = require('async-mqtt');
 const MoleClient = require('mole-rpc/MoleClient');
 const MoleClientProxified = require('mole-rpc/MoleClientProxified');
 const MoleServer = require('mole-rpc/MoleServer');
-const AutoTester = require('mole-rpc/AutoTester');
+const X = require('mole-rpc/X');
+const AutoTester = require('mole-rpc-autotester');
 
 const TransportClient = require('../TransportClient');
 const TransportServer = require('../TransportServer');
@@ -12,6 +13,7 @@ async function main() {
     const clients = await prepareClients();
 
     const autoTester = new AutoTester({
+        X,
         server,
         simpleClient: clients.simpleClient,
         proxifiedClient: clients.proxifiedClient
@@ -22,7 +24,6 @@ async function main() {
 
 async function prepareServer() {
     const mqttClient = MQTT.connect('tcp://localhost:1883');
-    await waitForEvent(mqttClient, 'connect');
 
     return new MoleServer({
         transports: [
@@ -37,7 +38,6 @@ async function prepareServer() {
 
 async function prepareClients() {
     const mqttClient = MQTT.connect('tcp://localhost:1883');
-    await waitForEvent(mqttClient, 'connect');
 
     const simpleClient = new MoleClient({
         requestTimeout: 1000, // autotester expects this value
@@ -58,12 +58,6 @@ async function prepareClients() {
     });
 
     return { simpleClient, proxifiedClient };
-}
-
-function waitForEvent(emitter, eventName) {
-    return new Promise((resolve, reject) => {
-        emitter.on(eventName, resolve);
-    });
 }
 
 main().then(() => {

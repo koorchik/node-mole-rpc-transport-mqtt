@@ -1,6 +1,6 @@
 {
     "name": "mole-rpc-transport-mqtt",
-    "version": "0.3.0",
+    "version": "1.0.0",
     "description": "MQTT transport for Mole-RPC (JSON RPC library)",
     "main": "index.js",
     "scripts": {
@@ -11,12 +11,13 @@
         "url": "git+https://github.com/koorchik/node-mole-rpc-transport-mqtt.git"
     },
     "peerDependencies": {
-        "mole-rpc": "^0.3.0",
-        "async-mqtt": "^2.0.0"
+        "mole-rpc": "1.*",
+        "async-mqtt": "^2.5.0"
     },
     "devDependencies": {
-        "mole-rpc": "^0.3.0",
-        "async-mqtt": "^2.0.0"
+        "async-mqtt": "^2.5.0",
+        "mole-rpc": "1.*",
+        "mole-rpc-autotester": "1.*"
     },
     "keywords": [
         "jsonrpc",
