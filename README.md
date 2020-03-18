@@ -19,6 +19,21 @@ You can organize many to many RPC-connunication between microservices via MQTT.
 
 *For example, in our case, we use this module to connect microservices deployed to an IoT Hub*
 
+**Which MQTT server to use?**
+
+You can use anyone you wish. As for us, we use in production:
+
+1. [Eclipse Mosquitto](https://mosquitto.org/). Very lightweight but works greatly.
+2. [EMQ X](https://www.emqx.io/). More powerful if you need more features.
+
+The easiest way to start playing is to run mosquitto in docker:
+
+```sh
+docker run -it -p 1883:1883 eclipse-mosquitto
+```
+
+After that you can try the example below.
+
 ## Usage Example
 
 ```javascript
