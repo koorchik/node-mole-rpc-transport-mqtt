@@ -156,7 +156,7 @@ const outTopic = `/rpc/${clientId}/auth-server`
 ```
 
 So, for each clients connection to server you will have a pair of topics.
-It looks a little bit more complecated but allows easely switch to many-to-many connection apprach.
+It looks a little bit more complicated but allows easely switch to many-to-many connection apprach.
 
 ### Many-to-many connections
 
@@ -165,7 +165,7 @@ For this case, you can use the same approach as for "Many RPC clients and one RP
 1. You run every service as an Mole RPC server.
 2. You use instantiate Mole RPC clients with corresponding topics. 
 
-You can notive that if SERVICE_A talks to SEVICE_B we need 2 topics. But when SERVICE_B talks to SERVICE_A we will use the same topic names and that is ok. This transport handles this situation, so you can use understandable topics which always follow this pattern:
+You can notice that if SERVICE_A talks to SERVICE_B we need 2 topics. But when SERVICE_B talks to SERVICE_A we will use the same topic names and that is ok. This transport handles this situation, so you can use understandable topics which always follow this pattern:
 
 * Always send data to:  `/rpc/${FROM}/${TO}`
 * Always get data from: `/rpc/${TO}/${FROM}`

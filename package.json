@@ -1,10 +1,12 @@
 {
     "name": "mole-rpc-transport-mqtt",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "MQTT transport for Mole-RPC (JSON RPC library)",
     "main": "index.js",
     "scripts": {
-        "test": "node ./tests/autotests.js || exit 1"
+        "test": "node ./tests/autotests.js || exit 1",
+        "lint": "eslint *.js",
+        "mocha": "mocha --timeout 60000 --exit --reporter spec --ui qunit tests/transport-tests.js"
     },
     "repository": {
         "type": "git",
@@ -15,9 +17,22 @@
         "async-mqtt": "^2.5.0"
     },
     "devDependencies": {
-        "async-mqtt": "^2.5.0",
-        "mole-rpc": "1.*",
-        "mole-rpc-autotester": "1.*"
+        "async-mqtt": "^2.6.1",
+        "babel-eslint": "^10.1.0",
+        "chai": "^4.3.4",
+        "eslint": "^7.32.0",
+        "eslint-config-webbylab": "^5.4.1",
+        "eslint-plugin-fetch": "0.0.1",
+        "eslint-plugin-import": "^2.24.0",
+        "eslint-plugin-more": "^1.0.3",
+        "eslint-plugin-no-require-lodash": "^1.1.0",
+        "eslint-plugin-prefer-spread": "^1.0.3",
+        "eslint-plugin-react": "^7.24.0",
+        "eslint-plugin-security": "^1.4.0",
+        "mocha": "^9.1.0",
+        "mole-rpc": "^1.0.4",
+        "mole-rpc-autotester": "1.*",
+        "uuid": "^8.3.2"
     },
     "keywords": [
         "jsonrpc",
