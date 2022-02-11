@@ -13,7 +13,7 @@ class MQTTTransportClient {
         await this.mqttClient.subscribe(this.inTopic);
 
         this.mqttClient.on('message', (topic, data) => {
-            if (topic !== this.inTopic) return;
+            if (!this.inTopic.endsWith(topic)) return;
             callback(data.toString());
         });
     }
