@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - support of `outQos` level parameter for both transports: it will be used for publishing
 - support of MQTT@5.0 `responseTopic` property: it will be provided to server and selected by default
 - `index.js` file to export components
+- node `18` version for the Travis check
 
 ### Changed
 - the `outTopic` parameter for `MQTTTransportServer` is not required anymore due to added `responseTopic` support
