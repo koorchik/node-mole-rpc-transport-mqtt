@@ -1,6 +1,6 @@
 {
     "name": "mole-rpc-transport-mqtt",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "MQTT transport for Mole-RPC (JSON RPC library)",
     "main": "index.js",
     "scripts": {
@@ -12,10 +12,10 @@
     },
     "peerDependencies": {
         "mole-rpc": "1.*",
-        "async-mqtt": "^2.5.0"
+        "async-mqtt": "^2.6.3"
     },
     "devDependencies": {
-        "async-mqtt": "^2.5.0",
+        "async-mqtt": "^2.6.3",
         "mole-rpc": "1.*",
         "mole-rpc-autotester": "1.*"
     },

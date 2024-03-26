@@ -1,25 +1,49 @@
+const { QOS_LEVELS } = require('./constants');
+
 class MQTTTransportServer {
-    constructor({ mqttClient, inTopic, outTopic }) {
+    constructor({
+        mqttClient,
+        inTopic,
+        outTopic,
+        inQos = QOS_LEVELS.AT_MOST_ONCE,
+        outQos = QOS_LEVELS.AT_MOST_ONCE
+    }) {
         if (!mqttClient) throw new Error('"mqttClient" required');
         if (!inTopic) throw new Error('"inTopic" required');
-        if (!outTopic) throw new Error('"outTopic" required');
 
         this.mqttClient = mqttClient;
         this.inTopic = inTopic;
         this.outTopic = outTopic;
+        this.inQos = inQos;
+        this.outQos = outQos;
     }
 
     async onData(callback) {
-        await this.mqttClient.subscribe(this.inTopic);
+        await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
 
-        this.mqttClient.on('message', async (inTopic, requestData) => {
+        this.mqttClient.on('message', async (inTopic, requestData, packet) => {
             const responseData = await callback(requestData.toString());
-            if (!responseData) return;
 
-            const outTopic =
-                typeof this.outTopic === 'function' ? this.outTopic({ inTopic }) : this.outTopic;
+            if (!responseData) {
+                return;
+            }
 
-            this.mqttClient.publish(outTopic, responseData);
+            let outTopic;
+
+            if (packet.properties && packet.properties.responseTopic) {
+                // Supported only by MQTT 5.0
+                outTopic = packet.properties.responseTopic;
+            } else if (typeof this.outTopic === 'function') {
+                outTopic = this.outTopic({ inTopic });
+            } else {
+                outTopic = this.outTopic;
+            }
+
+            if (!outTopic) {
+                throw new Error('"outTopic" is not specified');
+            }
+
+            await this.mqttClient.publish(outTopic, responseData, { qos: this.outQos });
         });
     }
 }
