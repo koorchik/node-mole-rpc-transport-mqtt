@@ -1,4 +1,4 @@
-MQTT Transport for Mole RPC (JSON RPC Library) 
+MQTT Transport for Mole RPC (JSON RPC Library)
 ---------------------------------------------
 
 [![npm version](https://badge.fury.io/js/mole-rpc-transport-mqtt.svg)](https://badge.fury.io/js/mole-rpc-transport-mqtt)
@@ -8,14 +8,14 @@ MQTT Transport for Mole RPC (JSON RPC Library)
 
 Mole-RPC is a tiny transport agnostic JSON-RPC 2.0 client and server which can work both in NodeJs, Browser, Electron etc.
 
-This is MQTT based tranport but there are [many more transports](https://www.npmjs.com/search?q=keywords:mole-transport). 
+This is MQTT based tranport but there are [many more transports](https://www.npmjs.com/search?q=keywords:mole-transport).
 
 
 **What is the reason of using MQTT for JSON-RPC?**
 
 MQTT is a standard broker in IoT world. It is lightweight and fast message broker and the same time it contains a lot of advanced features like (persistence, retained messaged, QoS, ACL etc).
 
-You can organize many to many RPC-connunication between microservices via MQTT. 
+You can organize many to many RPC-connunication between microservices via MQTT.
 
 *For example, in our case, we use this module to connect microservices deployed to an IoT Hub*
 
@@ -61,15 +61,15 @@ async function runServer() {
       })
     ],
   });
-  
+
   server.expose({
     getGreeting(name) {
       return `Hi, ${name}`;
-    } 
+    }
   });
 
   await server.run();
-} 
+}
 
 
 async function runClients() {
@@ -78,11 +78,11 @@ async function runClients() {
     const client1 = new MoleClient({
       transport: new MQTTTransportClient({
         mqttClient,
-        inTopic: 'toClient/1', 
+        inTopic: 'toClient/1',
         outTopic: 'fromClient/1'
       }),
     });
-    
+
     const client2 = new MoleClient({
       transport: new MQTTTransportClient({
         mqttClient,
@@ -90,7 +90,7 @@ async function runClients() {
         outTopic: 'fromClient/2'
       }),
     });
-    
+
     console.log(
       'CLIENT 1',
       await client1.callMethod('getGreeting', ['User1'])
@@ -107,21 +107,36 @@ main(console.log, console.error);
 
 ## How does it work?
 
-MQTT has topics. Different services can subscribe to different topic. You can use wildcard characters in names like "+" or "#".
+MQTT has topics. \
+Different services can subscribe to different topic. \
+You can use wildcard characters in names like `+` or `#`.
 
 **MQTTTransportClient** has two topic related parameters:
 
-* outTopic - sends request to this topic.
-* inTopic  - gets response in this topic.
+* `outTopic` - sends request to this topic.
+* `inTopic`  - gets response in this topic.
 
 
 **MQTTTransportServer** has two topic related parameters:
 
-* inTopic  - listend to requests from client in this topic. If you have many clients it makes sense use wildcard topic. 
-* outTopic - sends response to this topic. You can pass callback which will convert in topic to outtopic.
+* `inTopic`  - listend to requests from client in this topic. \
+  If you have many clients it makes sense use wildcard topic.
+* `outTopic` - sends response to this topic. \
+  You can pass callback which will convert in topic to outtopic.
 
+Also, both **MQTTTransportClient** and **MQTTTransportServer** support `inQos` and `outQos` parameters \
+to control the [quality of service](https://en.wikipedia.org/wiki/MQTT#Quality_of_service).
 
-## Universal approach for to how to name topics in scalable way
+## How to use topics in the scalable way
+
+### If you use MQTT version 5 or higher
+
+MQTT version 5 supports the `responseTopic` property in-built to the protocol.
+
+The **MQTTTransportClient** will automatically pass it to server, therefore \
+you can omit specifing `outTopic` for **MQTTTransportServer** in this case.
+
+### If you use MQTT version 4 or lower
 
 One of the pattern can be the following:
 
@@ -130,7 +145,7 @@ One of the pattern can be the following:
 
 *See "Usage Example" for a simpler approach*
 
-### Many RPC clients and one RPC Server. 
+#### Many RPC clients and one RPC Server.
 
 Let's assume that is an authentication server
 
@@ -155,20 +170,24 @@ const inTopic = `/rpc/auth-server/${clientId}`;
 const outTopic = `/rpc/${clientId}/auth-server`
 ```
 
-So, for each clients connection to server you will have a pair of topics.
-It looks a little bit more complecated but allows easely switch to many-to-many connection apprach.
+So, for each clients connection to server you will have a pair of topics. \
+It looks a little bit more complicated but allows easely switch to many-to-many connection apprach.
 
-### Many-to-many connections
+#### Many-to-many connections
 
-For this case, you can use the same approach as for "Many RPC clients and one RPC Server" case. 
+For this case, you can use the same approach as for "Many RPC clients and one RPC Server" case.
 
 1. You run every service as an Mole RPC server.
-2. You use instantiate Mole RPC clients with corresponding topics. 
+2. You use instantiate Mole RPC clients with corresponding topics.
 
-You can notive that if SERVICE_A talks to SEVICE_B we need 2 topics. But when SERVICE_B talks to SERVICE_A we will use the same topic names and that is ok. This transport handles this situation, so you can use understandable topics which always follow this pattern:
+You can notive that if SERVICE_A talks to SEVICE_B we need 2 topics. \
+But when SERVICE_B talks to SERVICE_A we will use the same topic names and that is ok. \
+This transport handles this situation, so you can use understandable topics which always follow this pattern:
 
 * Always send data to:  `/rpc/${FROM}/${TO}`
 * Always get data from: `/rpc/${TO}/${FROM}`
 
-This is the approach we use for many-to-many communication approach but you can use other approaces. 
-For example, if you want to allow SERVICE_A to get request only from SERVICE_B, you can use inTopic name without wildcard - `/rpc/SERVICE_B/SERVICE_A` (outTopic can be set to static value `/rpc/SERVICE_A/SERVICE_B` as well ).
+This is the approach we use for many-to-many communication approach but you can use other approaces. \
+For example, if you want to allow SERVICE_A to get request only from SERVICE_B, \
+you can use inTopic name without wildcard - `/rpc/SERVICE_B/SERVICE_A` \
+(outTopic can be set to static value `/rpc/SERVICE_A/SERVICE_B` as well ).
