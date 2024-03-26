@@ -41,7 +41,7 @@ class MQTTTransportServer {
                 // Supported only by MQTT 5.0
                 outTopic = packet.properties.responseTopic;
             } else if (typeof this.outTopic === 'function') {
-                outTopic = this.outTopic({ inTopic });
+                outTopic = this.outTopic({ inTopic: topic });
             } else {
                 outTopic = this.outTopic;
             }
