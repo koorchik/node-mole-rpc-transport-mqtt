@@ -25,12 +25,12 @@ class MQTTTransportClient {
 
         const inTopicRegExp = buildTopicRegExp(this.inTopic);
 
-        this.mqttClient.on('message', (topic, data) => {
+        this.mqttClient.on('message', (topic, messageBuffer) => {
             if (!inTopicRegExp.test(topic)) {
                 return;
             }
 
-            callback(data.toString());
+            callback(messageBuffer.toString());
         });
     }
 

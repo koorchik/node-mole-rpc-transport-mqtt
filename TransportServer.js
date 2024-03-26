@@ -24,12 +24,12 @@ class MQTTTransportServer {
 
         const inTopicRegExp = buildTopicRegExp(this.inTopic);
 
-        this.mqttClient.on('message', async (inTopic, requestData, packet) => {
-            if (!inTopicRegExp.test(inTopic)) {
+        this.mqttClient.on('message', async (topic, messageBuffer, packet) => {
+            if (!inTopicRegExp.test(topic)) {
                 return;
             }
 
-            const responseData = await callback(requestData.toString());
+            const responseData = await callback(messageBuffer.toString());
 
             if (!responseData) {
                 return;
