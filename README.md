@@ -140,8 +140,8 @@ you can omit specifing `outTopic` for **MQTTTransportServer** in this case.
 
 One of the pattern can be the following:
 
-* Send data to:  `/rpc/${FROM}/${TO}`
-* Get data from: `/rpc/${TO}/${FROM}`
+* Send data to:  `rpc/${FROM}/${TO}`
+* Get data from: `rpc/${TO}/${FROM}`
 
 *See "Usage Example" for a simpler approach*
 
@@ -152,7 +152,7 @@ Let's assume that is an authentication server
 **Server:**
 
 ```js
-const inTopic = '/rpc/+/auth-server';
+const inTopic = 'rpc/+/auth-server';
 const outTopic = inTopicToOutTopic;
 
 function inTopicToOutTopic({ inTopic }) {
@@ -166,8 +166,8 @@ function inTopicToOutTopic({ inTopic }) {
 
 ```js
 const clientId = 'client123'; // you can use UUID for automatic id generation.
-const inTopic = `/rpc/auth-server/${clientId}`;
-const outTopic = `/rpc/${clientId}/auth-server`
+const inTopic = `rpc/auth-server/${clientId}`;
+const outTopic = `rpc/${clientId}/auth-server`
 ```
 
 So, for each clients connection to server you will have a pair of topics. \
@@ -184,10 +184,10 @@ You can notive that if SERVICE_A talks to SEVICE_B we need 2 topics. \
 But when SERVICE_B talks to SERVICE_A we will use the same topic names and that is ok. \
 This transport handles this situation, so you can use understandable topics which always follow this pattern:
 
-* Always send data to:  `/rpc/${FROM}/${TO}`
-* Always get data from: `/rpc/${TO}/${FROM}`
+* Always send data to:  `rpc/${FROM}/${TO}`
+* Always get data from: `rpc/${TO}/${FROM}`
 
 This is the approach we use for many-to-many communication approach but you can use other approaces. \
 For example, if you want to allow SERVICE_A to get request only from SERVICE_B, \
-you can use inTopic name without wildcard - `/rpc/SERVICE_B/SERVICE_A` \
-(outTopic can be set to static value `/rpc/SERVICE_A/SERVICE_B` as well ).
+you can use inTopic name without wildcard - `rpc/SERVICE_B/SERVICE_A` \
+(outTopic can be set to static value `rpc/SERVICE_A/SERVICE_B` as well ).

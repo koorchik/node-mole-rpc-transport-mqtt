@@ -1,10 +1,10 @@
 {
     "name": "mole-rpc-transport-mqtt",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "MQTT transport for Mole-RPC (JSON RPC library)",
     "main": "index.js",
     "scripts": {
-        "test": "node ./tests/autotests.js || exit 1"
+        "test": "(node ./tests/autotests.js && node ./tests/topicRegExpTests.js) || exit 1"
     },
     "repository": {
         "type": "git",
