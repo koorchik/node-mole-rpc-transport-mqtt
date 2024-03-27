@@ -1,4 +1,5 @@
 const { QOS_LEVELS } = require('./constants');
+const buildTopicRegExp = require('./buildTopicRegExp');
 
 class MQTTTransportClient {
     constructor({
@@ -22,12 +23,14 @@ class MQTTTransportClient {
     async onData(callback) {
         await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
 
-        this.mqttClient.on('message', (topic, data) => {
-            if (topic !== this.inTopic) {
+        const inTopicRegExp = buildTopicRegExp(this.inTopic);
+
+        this.mqttClient.on('message', (topic, messageBuffer) => {
+            if (!inTopicRegExp.test(topic)) {
                 return;
             }
 
-            callback(data.toString());
+            callback(messageBuffer.toString());
         });
     }
 

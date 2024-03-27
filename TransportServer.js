@@ -1,4 +1,5 @@
 const { QOS_LEVELS } = require('./constants');
+const buildTopicRegExp = require('./buildTopicRegExp');
 
 class MQTTTransportServer {
     constructor({
@@ -21,8 +22,14 @@ class MQTTTransportServer {
     async onData(callback) {
         await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
 
-        this.mqttClient.on('message', async (inTopic, requestData, packet) => {
-            const responseData = await callback(requestData.toString());
+        const inTopicRegExp = buildTopicRegExp(this.inTopic);
+
+        this.mqttClient.on('message', async (topic, messageBuffer, packet) => {
+            if (!inTopicRegExp.test(topic)) {
+                return;
+            }
+
+            const responseData = await callback(messageBuffer.toString());
 
             if (!responseData) {
                 return;
@@ -34,7 +41,7 @@ class MQTTTransportServer {
                 // Supported only by MQTT 5.0
                 outTopic = packet.properties.responseTopic;
             } else if (typeof this.outTopic === 'function') {
-                outTopic = this.outTopic({ inTopic });
+                outTopic = this.outTopic({ inTopic: topic });
             } else {
                 outTopic = this.outTopic;
             }
