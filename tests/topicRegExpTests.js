@@ -1,4 +1,3 @@
-const assert = require('node:assert');
 const buildTopicRegExp = require('../buildTopicRegExp');
 
 assertMatches('rpc/one/two', 'rpc/one/two');
@@ -27,7 +26,9 @@ function assertMatches(receivedTopic, subscriptionTopic) {
 
     const regExp = buildTopicRegExp(subscriptionTopic);
 
-    assert.equal(regExp.test(receivedTopic), true);
+    if (regExp.test(receivedTopic) !== true) {
+        throw new Error('Topic should match to subscription pattern!');
+    }
 }
 
 function assertNotMatches(receivedTopic, subscriptionTopic) {
@@ -35,5 +36,7 @@ function assertNotMatches(receivedTopic, subscriptionTopic) {
 
     const regExp = buildTopicRegExp(subscriptionTopic);
 
-    assert.equal(regExp.test(receivedTopic), false);
+    if (regExp.test(receivedTopic) !== false) {
+        throw new Error('Topic should NOT match to subscription pattern!');
+    }
 }
