@@ -18,20 +18,23 @@ class MQTTTransportClient {
         this.outTopic = outTopic;
         this.inQos = inQos;
         this.outQos = outQos;
+        this.messageHandler = () => {};
     }
 
     async onData(callback) {
-        await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
-
         const inTopicRegExp = buildTopicRegExp(this.inTopic);
 
-        this.mqttClient.on('message', (topic, messageBuffer) => {
+        this.messageHandler = (topic, messageBuffer) => {
             if (!inTopicRegExp.test(topic)) {
                 return;
             }
 
             callback(messageBuffer.toString());
-        });
+        };
+
+        this.mqttClient.on('message', this.messageHandler);
+
+        await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
     }
 
     async sendData(data) {
@@ -41,6 +44,14 @@ class MQTTTransportClient {
                 responseTopic: this.inTopic
             }
         });
+    }
+
+    async shutdown() {
+        await this.mqttClient.unsubscribe(this.inTopic);
+
+        this.mqttClient.off('message', this.messageHandler);
+
+        this.messageHandler = () => {};
     }
 }
 

@@ -17,14 +17,13 @@ class MQTTTransportServer {
         this.outTopic = outTopic;
         this.inQos = inQos;
         this.outQos = outQos;
+        this.messageHandler = () => {};
     }
 
     async onData(callback) {
-        await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
-
         const inTopicRegExp = buildTopicRegExp(this.inTopic);
 
-        this.mqttClient.on('message', async (topic, messageBuffer, packet) => {
+        this.messageHandler = async (topic, messageBuffer, packet) => {
             if (!inTopicRegExp.test(topic)) {
                 return;
             }
@@ -51,7 +50,19 @@ class MQTTTransportServer {
             }
 
             await this.mqttClient.publish(outTopic, responseData, { qos: this.outQos });
-        });
+        };
+
+        this.mqttClient.on('message', this.messageHandler);
+
+        await this.mqttClient.subscribe(this.inTopic, { qos: this.inQos });
+    }
+
+    async shutdown() {
+        await this.mqttClient.unsubscribe(this.inTopic);
+
+        this.mqttClient.off('message', this.messageHandler);
+
+        this.messageHandler = () => {};
     }
 }
 
