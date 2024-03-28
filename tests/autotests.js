@@ -11,8 +11,13 @@ const TransportServer = require('../TransportServer');
 const MQTT_ENDPOINT = 'tcp://test.mosquitto.org:1883'; // "tcp://localhost:1883" for local testing
 
 async function main() {
-    const server = await prepareServer();
-    const clients = await prepareClients();
+    await runAutoTests({ protocolVersion: 4 });
+    await runAutoTests({ protocolVersion: 5 });
+}
+
+async function runAutoTests(settings) {
+    const server = await prepareServer(settings);
+    const clients = await prepareClients(settings);
 
     const autoTester = new AutoTester({
         X,
@@ -24,8 +29,8 @@ async function main() {
     await autoTester.runAllTests();
 }
 
-async function prepareServer() {
-    const mqttClient = MQTT.connect(MQTT_ENDPOINT);
+async function prepareServer({ protocolVersion }) {
+    const mqttClient = MQTT.connect(MQTT_ENDPOINT, { protocolVersion });
 
     return new MoleServer({
         transports: [
@@ -38,8 +43,8 @@ async function prepareServer() {
     });
 }
 
-async function prepareClients() {
-    const mqttClient = MQTT.connect(MQTT_ENDPOINT);
+async function prepareClients({ protocolVersion }) {
+    const mqttClient = MQTT.connect(MQTT_ENDPOINT, { protocolVersion });
 
     const simpleClient = new MoleClient({
         requestTimeout: 1000, // autotester expects this value
