@@ -2,7 +2,6 @@ MQTT Transport for Mole RPC (JSON RPC Library)
 ---------------------------------------------
 
 [![npm version](https://badge.fury.io/js/mole-rpc-transport-mqtt.svg)](https://badge.fury.io/js/mole-rpc-transport-mqtt)
-[![Build Status](https://travis-ci.org/koorchik/node-mole-rpc-transport-mqtt.svg?branch=master)](https://travis-ci.org/koorchik/node-mole-rpc-transport-mqtt)
 [![Known Vulnerabilities](https://snyk.io/test/github/koorchik/node-mole-rpc-transport-mqtt/badge.svg?targetFile=package.json)](https://snyk.io/test/github/koorchik/node-mole-rpc-transport-mqtt?targetFile=package.json)
 
 
